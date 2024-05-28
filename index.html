@@ -253,7 +253,19 @@
             </div>
             <div>
                 <label for="highlightCorrect" id="algorithmLabel">Highlight Correct: </label>
-                <input type="checkbox" id="highlightCorrect" style="margin-right: 10px" title="Wenn aktiviert, werden die Balken grün, wenn sie an der richtigen Position sind" checked>
+                <input type="checkbox" id="highlightCorrect" style="margin-right: 10px" title="Wenn aktiviert, werden die Balken grün, wenn sie an der richtigen Position sind" checked onclick="
+                    let bars = document.getElementById('sortArea').children;
+                    for(let i = 0; i < bars.length; i++){
+                        setDefaultColor(i);
+                    }
+                    if (!this.checked){
+                        if (isSorted()){
+                            bars[at].style.backgroundColor = 'green';
+                        }else {
+                            bars[at].style.backgroundColor = 'black';
+                        }
+                    }
+                   ">
             </div>
         </div>
 
