@@ -238,12 +238,19 @@
                 <button onclick="shuffle()" class="btn btn-primary">
                     Shuffle
                 </button>
-                <button id="stopButton" class="btn btn-danger" onmousedown="stopSorting()" onmouseup="stopSorting(false)" onmouseleave="stopSorting(false)">Stop Sorting</button>
+                <button id="stopButton" class="btn btn-danger" onclick="stopSorting()" style="width: 125px">Stop Sorting</button>
             </div>
+        </div>
+
+        <div style="display: flex; align-items: center; margin: 10px 0; justify-content: space-evenly; flex-wrap: wrap; gap: 10px">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <label for="speed" id="speedLabel">Delay: </label>
                 <input type="checkbox" id="delayEnabled" style="margin-right: 10px" title="Wenn deaktiviert, wird der Algorithmus ohne Verzögerung ausgeführt (Nur die Systemgeschwindigkeit)" checked>
                 <input type="range" min="1" max="1000" value="20" step="1" oninput="updateSpeed()" id="speed" style="width: 250px" class="custom-range" title="Delay in ms">
+            </div>
+            <div>
+                <label for="highlightCorrect" id="algorithmLabel">Highlight Correct: </label>
+                <input type="checkbox" id="highlightCorrect" style="margin-right: 10px" title="Wenn aktiviert, werden die Balken grün, wenn sie an der richtigen Position sind" checked>
             </div>
         </div>
 
@@ -1252,11 +1259,19 @@ function flip(array, i){
         let selectedBarIndex = null;
         let shouldStop = false;
 
+        //nur für die Einbindung um zu zeigen, was schon richtig ist
+        let referenceArray = [];
+
         function stopSorting(stop){
+
+            console.log("stopSorting");
+
             //wenn stop nicht gesetzt ist, dann toggle den wert
             if(stop === undefined)
             shouldStop = !shouldStop;
             else shouldStop = stop;
+
+
             document.getElementById("stopButton").innerText = shouldStop ? "Release" : "Stop Sorting";
             if (!shouldStop){
                 document.getElementById("stopButton").classList.add("btn-danger");
@@ -1346,6 +1361,9 @@ function flip(array, i){
                     else
                         valueArray[i] =  Math.floor(Math.random() * 3);
             }
+
+            //valueArray kopieren
+            referenceArray = valueArray.slice();
 
             for (let i = 0; i < valueArray.length; i++) {
                 //neues Element in sortArea einfügen
@@ -1457,6 +1475,15 @@ function flip(array, i){
             }
         }
 
+        function setDefaultColor(at){
+            let bars = document.getElementById("sortArea").children;
+            if (valueArray[at] === referenceArray[at] && document.getElementById("highlightCorrect").checked){
+                bars[at].style.backgroundColor = "green";
+            }else {
+                bars[at].style.backgroundColor = "black";
+            }
+        }
+
         async function swap(i, j){
             let temp = valueArray[i];
             valueArray[i] = valueArray[j];
@@ -1470,8 +1497,8 @@ function flip(array, i){
             updateStats();
             updateBars();
             await delay(speed);
-            bars[i].style.backgroundColor = "black";
-            bars[j].style.backgroundColor = "black";
+            setDefaultColor(i);
+            setDefaultColor(j);
         }
 
         async function readAt(i){
@@ -1480,7 +1507,7 @@ function flip(array, i){
             reads++;
             updateStats();
             await delay(speed);
-            bars[i].style.backgroundColor = "black";
+            setDefaultColor(i)
             return valueArray[i];
         }
 
@@ -1491,7 +1518,7 @@ function flip(array, i){
             writes++;
             updateStats();
             await delay(speed);
-            bars[i].style.backgroundColor = "black";
+            setDefaultColor(i)
             updateBars();
         }
 
@@ -1519,7 +1546,7 @@ function flip(array, i){
                     //alle elemente auf schwarz setzen
                     let bars = document.getElementById("sortArea").children;
                     for (let i = 0; i < valueArray.length; i++) {
-                        bars[i].style.backgroundColor = "black";
+                        setDefaultColor(i);
                     }
 
                     return false;
@@ -1615,7 +1642,7 @@ function flip(array, i){
                 //zurücksetzen
                 for(let i = start; i < middle; i++){
                     let bars = document.getElementById("sortArea").children;
-                    bars[i].style.backgroundColor = "black";
+                    setDefaultColor(i)
                 }
 
                 //von mitte bis ende einmal alle rot färben
@@ -1632,7 +1659,7 @@ function flip(array, i){
                 //zurücksetzen
                 for(let i = middle; i < end; i++){
                     let bars = document.getElementById("sortArea").children;
-                    bars[i].style.backgroundColor = "black";
+                    setDefaultColor(i)
                 }
 
                 let i = 0;
