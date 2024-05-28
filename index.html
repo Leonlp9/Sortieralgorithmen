@@ -1038,6 +1038,14 @@ function gnomeSort(array){
 
             //erste reihe ist der index
             let tr = document.createElement("tr");
+
+            // Füge eine Zelle für den Titel hinzu, die sich über zwei Zeilen erstreckt
+            let thTitle = document.createElement("th");
+            thTitle.innerText = title;
+            thTitle.rowSpan = 2;
+            thTitle.style.width = "60px";
+            thTitle.style.textAlign = "center";
+            tr.appendChild(thTitle);
             for(let i = 0; i < array.length; i++){
                 let th = document.createElement("th");
                 th.innerText = i;
@@ -1057,14 +1065,40 @@ function gnomeSort(array){
             document.getElementById("tableContainer").appendChild(table);
         }
 
-        function highlightTableRow(title, index){
+        function highlightTableRow(title, index, readOrWrite){
             let table = document.getElementById(title + "Table");
             if(table !== null){
                 let tr = table.children[1];
                 for(let i = 0; i < tr.children.length; i++){
                     //wenn index übereinstimmt, dann grün ansonsten lösch die farbe aus dem element, damit die der klasse greift
-                    if(i === index){
-                        tr.children[i].style.backgroundColor = "green";
+                    if(i === index) {
+                        if (readOrWrite === "read"){
+                            tr.children[i].style.backgroundColor = "blue";
+                        }
+                        else{
+                            tr.children[i].style.backgroundColor = "yellow";
+                        }
+
+                    }else{
+                        tr.children[i].style.backgroundColor = "";
+                    }
+                }
+            }
+        }
+
+        function highlightTableRows(title, indexes, readOrWrite){
+            let table = document.getElementById(title + "Table");
+            if(table !== null){
+                let tr = table.children[1];
+                for(let i = 0; i < tr.children.length; i++){
+                    //wenn index übereinstimmt, dann grün ansonsten lösch die farbe aus dem element, damit die der klasse greift
+                    if(indexes.includes(i)){
+                        if (readOrWrite === "read"){
+                            tr.children[i].style.backgroundColor = "blue";
+                        }
+                        else{
+                            tr.children[i].style.backgroundColor = "yellow";
+                        }
                     }else{
                         tr.children[i].style.backgroundColor = "";
                     }
@@ -1234,31 +1268,71 @@ function gnomeSort(array){
 
         async function mergeSort(){
             async function merge(start, middle, end){
+
                 let left = valueArray.slice(start, middle);
                 let right = valueArray.slice(middle, end);
+                showArrayAsTable(left, "left")
+                showArrayAsTable(right, "right")
+
+                //von start bis mitte einmal alle blau färben
+                for(let i = start; i < middle; i++){
+                    let bars = document.getElementById("sortArea").children;
+                    bars[i].style.backgroundColor = "blue";
+                }
+                reads += left.length;
+                updateStats();
+                highlightTableRows("left", Array.from({length: left.length}, (_, i) => i), "write");
+                await delay(speed);
+                //zurücksetzen
+                for(let i = start; i < middle; i++){
+                    let bars = document.getElementById("sortArea").children;
+                    bars[i].style.backgroundColor = "black";
+                }
+
+                //von mitte bis ende einmal alle rot färben
+                for(let i = middle; i < end; i++){
+                    let bars = document.getElementById("sortArea").children;
+                    bars[i].style.backgroundColor = "blue";
+                }
+                reads += right.length;
+                updateStats();
+                highlightTableRows("right", Array.from({length: right.length}, (_, i) => i), "write");
+                await delay(speed);
+                //zurücksetzen
+                for(let i = middle; i < end; i++){
+                    let bars = document.getElementById("sortArea").children;
+                    bars[i].style.backgroundColor = "black";
+                }
+
                 let i = 0;
                 let j = 0;
                 let k = start;
                 while(i < left.length && j < right.length){
                     if(left[i] < right[j]){
+                        highlightTableRow("left", i, "read");
                         await writeAt(k, left[i])
                         i++;
                     }else{
+                        highlightTableRow("right", j, "read");
                         await writeAt(k, right[j])
                         j++;
                     }
                     k++;
                 }
                 while(i < left.length){
+                    highlightTableRow("left", i, "read");
                     await writeAt(k, left[i])
                     i++;
                     k++;
                 }
                 while(j < right.length){
+                    highlightTableRow("right", j, "read");
                     await writeAt(k, right[j])
                     j++;
                     k++;
                 }
+                deleteTable("left")
+                deleteTable("right")
                 updateBars();
             }
 
@@ -1268,7 +1342,6 @@ function gnomeSort(array){
                     await mergeSortRecursive(start, middle);
                     await mergeSortRecursive(middle, end);
                     await merge(start, middle, end);
-                    await delay(speed);
                 }
             }
 
@@ -1343,7 +1416,7 @@ function gnomeSort(array){
                     count[Math.floor(valueArray[i] / exp) % 10]++;
                     deleteTable("count")
                     showArrayAsTable(count, "count")
-                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10);
+                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10, "write");
                     await readAt(i);
                 }
 
@@ -1358,7 +1431,7 @@ function gnomeSort(array){
 
                 for(let i = 0; i < valueArray.length; i++){
                     await writeAt(i, output[i]);
-                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10);
+                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10, "read");
                 }
 
                 updateBars();
@@ -1411,7 +1484,7 @@ function gnomeSort(array){
                     count[valueArray[i] - min]++;
                     deleteTable("count");
                     showArrayAsTable(count, "count");
-                    highlightTableRow("count", valueArray[i] - min);
+                    highlightTableRow("count", valueArray[i] - min, "write");
                     await readAt(i);
                 }
 
@@ -1427,7 +1500,7 @@ function gnomeSort(array){
 
                 for (let i = 0; i < n; i++) {
                     await writeAt(i, output[i]);
-                    highlightTableRow("count", valueArray[i] - min);
+                    highlightTableRow("count", valueArray[i] - min, "read");
                 }
 
                 deleteTable("count");
