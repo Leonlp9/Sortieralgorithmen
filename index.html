@@ -157,7 +157,7 @@
         }
 
         header {
-            background-color: #f8f9fa;
+            background-color: #f2f3f4;
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid #dee2e6;
@@ -176,6 +176,14 @@
         header p {
             font-size: 1.2em;
             color: #6c757d;
+        }
+
+        pre{
+            border-radius: 5px;
+        }
+
+        :not(pre)>code[class*=language-], pre[class*=language-] {
+            background: #ffffff;
         }
 
     </style>
@@ -358,12 +366,12 @@
             </div>
 
             <h5>Psuedocode:</h5>
-            <pre class="bg-light p-2"><code class="language-javascript">for i from 0 to n-1:
+            <pre class=" p-2"><code class="language-javascript">for i from 0 to n-1:
     randomIndex = random number between i and n-1
     swap elements at index i and randomIndex</code></pre>
 
                 <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
+<pre class=" p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
     let randomIndex = Math.floor(Math.random() * n);
     swap(i, randomIndex);
 }</code></pre>
@@ -388,14 +396,14 @@
             Wikipedia: <a href="https://de.wikipedia.org/wiki/Bogosort" target="_blank">Bogo Sort</a>
 
             <h5>Psuedocode:</h5>
-            <pre class="bg-light p-2"><code class="language-javascript">while(!isSorted()){
+            <pre class=" p-2"><code class="language-javascript">while(!isSorted()){
     shuffle();
 }
 </code></pre>
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">while(!isSorted()){
+<pre class=" p-2"><code class="language-javascript">while(!isSorted()){
     shuffle();
 }
 </code></pre>
@@ -425,14 +433,14 @@
             Wikipedia: <a href="https://de.wikipedia.org/wiki/Bubblesort" target="_blank">Bubble Sort</a>
 
             <h5>Psuedocode:</h5>
-            <pre class="bg-light p-2"><code class="language-javascript">for i from 0 to n-1:
+            <pre class=" p-2"><code class="language-javascript">for i from 0 to n-1:
     for j from 1 to n:
         if array[j-1] > array[j]:
             swap elements at index j-1 and j</code></pre>
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
+<pre class=" p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
     for(let j = 1; j &lt; n; j++){
         if(array[j-1] &gt; array[j]){
             swap(j-1, j);
@@ -467,7 +475,7 @@
             Wikipedia: <a href="https://de.wikipedia.org/wiki/Selectionsort" target="_blank">Selection Sort</a>
 
             <h5>Pseudocode:</h5>
-            <pre class="bg-light p-2"><code class="language-javascript">for i from 0 to n-1:
+            <pre class=" p-2"><code class="language-javascript">for i from 0 to n-1:
     min = i
     for j from i+1 to n:
         if array[j] < array[min]:
@@ -477,7 +485,7 @@
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
+<pre class=" p-2"><code class="language-javascript">for(let i = 0; i &lt; n; i++){
     let min = i;
     for(let j = i+1; j &lt; n; j++){
         if(array[j] &lt; array[min]){
@@ -516,7 +524,7 @@
             Wikipedia: <a href="https://de.wikipedia.org/wiki/Insertionsort" target="_blank">Insertion Sort</a>
 
             <h5>Psuedocode:</h5>
-            <pre class="bg-light p-2"><code class="language-javascript">for i from 1 to n-1:
+            <pre class=" p-2"><code class="language-javascript">for i from 1 to n-1:
     key = array[i]
     j = i - 1
     while j >= 0 and array[j] > key:
@@ -526,7 +534,7 @@
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">for(let i = 1; i &lt; n; i++){
+<pre class=" p-2"><code class="language-javascript">for(let i = 1; i &lt; n; i++){
     let key = array[i];
     let j = i - 1;
     while(j &gt;= 0 &amp;&amp; array[j] &gt; key){
@@ -565,7 +573,7 @@
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function mergeSort(array){
+<pre class=" p-2"><code class="language-javascript">function mergeSort(array){
     if(array.length &lt;= 1){
         return array;
     }
@@ -620,7 +628,7 @@ function merge(left, right){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function quickSort(array, low, high){
+<pre class=" p-2"><code class="language-javascript">function quickSort(array, low, high){
     if(low &lt; high){
         let pi = partition(array, low, high);
         quickSort(array, low, pi - 1);
@@ -670,7 +678,7 @@ function partition(array, low, high){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function heapSort(array){
+<pre class=" p-2"><code class="language-javascript">function heapSort(array){
     let n = array.length;
     for(let i = Math.floor(n / 2) - 1; i &gt;= 0; i--){
         heapify(array, n, i);
@@ -726,7 +734,7 @@ function heapify(array, n, i){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function countingSort(array, exp){
+<pre class=" p-2"><code class="language-javascript">function countingSort(array, exp){
     let output = new Array(array.length);
     let count = new Array(10).fill(0);
     for(let i = 0; i &lt; array.length; i++){
@@ -783,7 +791,7 @@ function radixSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function shellSort(array){
+<pre class=" p-2"><code class="language-javascript">function shellSort(array){
     let n = array.length;
     for(let gap = Math.floor(n / 2); gap &gt; 0; gap = Math.floor(gap / 2)){
         for(let i = gap; i &lt; n; i++){
@@ -822,7 +830,7 @@ function radixSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">function countingSort(array){
+<pre class=" p-2"><code class="language-javascript">function countingSort(array){
     let n = array.length;
     let max = Math.max(...array);
     let min = Math.min(...array);
@@ -878,7 +886,7 @@ function radixSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function cocktailSort(array){
     let n = array.length;
     let swapped = true;
@@ -937,7 +945,7 @@ function cocktailSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function combSort(array){
     let n = array.length;
     let gap = n;
@@ -983,7 +991,7 @@ function combSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function gnomeSort(array){
     let index = 0;
     while(index &lt; array.length){
@@ -1023,7 +1031,7 @@ function gnomeSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function oddEvenSort(array){
     let sorted = false;
     while(!sorted){
@@ -1071,7 +1079,7 @@ function oddEvenSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function cycleSort(array){
     let n = array.length;
     for(let cycleStart = 0; cycleStart < n - 1; cycleStart++){
@@ -1135,7 +1143,7 @@ function cycleSort(array){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function stoogeSort(array, l, h){
     if(l >= h){
         return;
@@ -1179,7 +1187,7 @@ function stoogeSort(array, l, h){
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
-<pre class="bg-light p-2"><code class="language-javascript">
+<pre class=" p-2"><code class="language-javascript">
 function pancakeSort(array){
     let n = array.length;
     for(let i = n; i > 1; i--){
@@ -1225,7 +1233,7 @@ function flip(array, i){
         </div>
     </div>
 
-    <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; margin-top: 20px;">
+    <footer style="background-color: #f2f3f4; padding: 20px; text-align: center; margin-top: 20px;">
         <p>&copy; 2024 Leon Rabe. Alle Rechte vorbehalten.</p>
         <p>
             <a href="https://leonlp9.github.io/PrivatLinkTree/">Kontakt</a> |
