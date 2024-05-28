@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sortieralgorithmen visualisiert">
@@ -188,6 +190,11 @@
             background: #ffffff;
         }
 
+        .CodeMirror {
+            height: auto;
+            border: 1px solid #ccc;
+        }
+
     </style>
 </head>
 <header>
@@ -324,6 +331,66 @@
             </button>
         </div>
         <br>
+        <div class="line"> </div>
+
+        <h3>Eigener Algorithmus:</h3>
+
+        <textarea id="code" name="code">
+//Anleitung:
+//Verwenden Sie die gegebenen Funktionen, um die Balken zu animieren
+//Die gegebenen Funktionen benötigen ein await, um die Animation zu verzögern
+//Wenn eigene Funktionen erstellt werden, müssen diese asynchron sein
+
+//gegebene Funktionen:
+//await swap(i, j): Vertauscht die Balken an den Positionen i und j.
+//await isSorted(): Gibt true zurück, wenn die Balken sortiert sind, sonst false.
+//await readAt(i): Gibt den wert an der Position i zurück.
+//await writeAt(i, value): Schreibt den Wert value an die Position i.
+
+//Globale Variablen:
+//array: Das Array, das sortiert werden soll.
+//n: Die Länge des Arrays.
+
+async function mySort(){
+    for(let i = 0; i < n; i++){
+        let min = i;
+        for(let j = i+1; j < n; j++){
+            if(await readAt(j) < await readAt(min)){
+                min = j;
+            }
+        }
+        if(min !== i){
+            await swap(i, min);
+        }
+    }
+}
+
+mySort();</textarea>
+
+        <a href="#sort" onclick="runCode()" class="btn btn-primary mt-2">Run Code</a>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/javascript/javascript.min.js"></script>
+
+        <script>
+            var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                lineNumbers: true,
+                mode: "javascript",
+                theme: "default"
+            });
+
+            async function runCode() {
+                var array = valueArray;
+                var n = array.length;
+                var code = editor.getValue();
+                try {
+                    eval(code);
+                } catch (e) {
+                    console.error(e);
+                    alert('Error: ' + e.message);
+                }
+            }
+        </script>
+
         <div class="line"> </div>
     </div>
 
