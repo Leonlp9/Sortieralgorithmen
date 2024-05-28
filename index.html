@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sortieralgorithmen</title>
+    <!--    bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        #sortArea{
+            height: 100%;
+            display: flex;
+            overflow: hidden;
+            align-items: flex-end;
+        }
+
+        #sort{
+            min-height: 200px;
+            height: calc(100vh - 120px);
+            border: 1px solid black;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            background: #efefef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #sortArea > div{
+            background: black;
+            transition: height 0.15s, opacity 0.15s, border 0.15s;
+            overflow: hidden;
+        }
+
+        .bar-selected{
+            opacity: 0.75;
+            border-left: 1px solid white;
+            border-right: 1px solid white;
+        }
+
+        #sortArea > div:hover{
+            opacity: 0.75;
+            border-left: 1px solid white;
+            border-right: 1px solid white;
+        }
+
+        label{
+            margin-bottom: 0;
+        }
+
+        .line{
+            border-top: 1px solid black;
+            margin: 10px 0;
+        }
+
+
+        #explanation h2{
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #explanation h3{
+            margin-top: 40px;
+        }
+
+        #explanation h3:after{
+            content: "";
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: black;
+            margin-top: 5px;
+        }
+
+        #explanation h5{
+            margin-top: 10px;
+        }
+
+        table{
+            width: 100%;
+            /*alle spalten gleich breit aber nicht zu klein*/
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        th{
+            background: #9f9f9f;
+        }
+
+    </style>
+</head>
+<body>
+    <div style="display: flex; align-items: center; margin: 10px 0; justify-content: space-evenly; flex-wrap: wrap">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="input">How many Bars:</label>
+            <input type="number" id="input" placeholder="How many Bars" min="2" value="256" max="5000" style="width: 100px" onchange="createBars(this.value)">
+            <label for="twiceNumbers">Twice Numbers</label>
+            <input type="checkbox" id="twiceNumbers" style="margin-left: 10px">
+            <button onclick="createBars(document.getElementById('input').value)" class="btn btn-primary">
+                Create Bars
+            </button>
+            <button onclick="shuffle()" class="btn btn-primary">
+                Shuffle
+            </button>
+        </div>
+        <div>
+            <span style="color: blue">■</span> <span>Lesen</span>
+            <span style="color: red">■</span> <span>Tauschen</span>
+            <span style="color: yellow">■</span> <span>Schreiben</span>
+            <span style="color: green">■</span> <span>Fertig</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="speed" id="speedLabel">Delay: </label>
+            <input type="checkbox" id="delayEnabled" style="margin-right: 10px" title="Wenn deaktiviert, wird der Algorithmus ohne Verzögerung ausgeführt (Nur die Systemgeschwindigkeit)" checked>
+            <input type="range" min="1" max="1000" value="20" step="1" oninput="updateSpeed()" id="speed" style="width: 250px" class="custom-range" title="Delay in ms">
+        </div>
+    </div>
+
+    <div id="sort">
+        <div>
+            <span style="color: blue">■</span> Reads: <span id="reads">0</span> |
+            <span style="color: yellow">■</span><span style="color: red">■</span><span style="font-size: 10px"></span> Writes: <span id="writes">0</span>
+            <button onclick="resetStats()" class="btn btn-danger" style="height: 20px; font-size: 11px; padding: 0 4px; margin: 0 5px">
+                Reset
+            </button>
+        </div>
+        <div id="sortArea">
+
+        </div>
+        <div id="tableContainer">
+
+        </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
+        <!--    Sortieralgorithmen-->
+        <button onclick="bogoSort()" class="btn btn-secondary">
+            Bogo Sort
+        </button>
+        <button onclick="bubbleSort()" class="btn btn-secondary">
+            Bubble Sort
+        </button>
+        <button onclick="selectionSort()" class="btn btn-secondary">
+            Selection Sort
+        </button>
+        <button onclick="insertionSort()" class="btn btn-secondary">
+            Insertion Sort
+        </button>
+        <button onclick="mergeSort()" class="btn btn-secondary">
+            Merge Sort
+        </button>
+        <button onclick="quickSort()" class="btn btn-secondary">
+            Quick Sort
+        </button>
+        <button onclick="heapSort()" class="btn btn-secondary">
+            Heap Sort
+        </button>
+        <button onclick="radixSort()" class="btn btn-secondary">
+            Radix Sort
+        </button>
+        <button onclick="shellSort()" class="btn btn-secondary">
+            Shell Sort
+        </button>
+        <button onclick="countingSort()" class="btn btn-secondary">
+            Counting Sort
+        </button>
+        <button onclick="cocktailSort()" class="btn btn-secondary">
+            Cocktail Sort
+        </button>
+        <button onclick="combSort()" class="btn btn-secondary">
+            Comb Sort
+        </button>
+        <button onclick="gnomeSort()" class="btn btn-secondary">
+            Gnome Sort
+        </button>
+    </div>
+
+    <div class="line"> </div>
+
+    <div class="container" id="explanation">
+        <h2>Erklärungen: <span style="font-size: 10px">Texte von ChatGPT</span></h2>
+
+        <div>
+            <h3>Sortieralgorithmen:</h3>
+            <p>Sortieralgorithmen sind Algorithmen, die eine Liste von Elementen in einer bestimmten Reihenfolge anordnen. Es gibt viele verschiedene Sortieralgorithmen, die sich in ihrer Effizienz, ihrem Speicherbedarf und ihrer Stabilität unterscheiden. Einige der bekanntesten Sortieralgorithmen sind hier aufgeführt.</p>
+
+            <h5>Details:</h5>
+            <ul>
+                <li><strong>Zeitkomplexität:</strong> Die Zeitkomplexität eines Algorithmus gibt an, wie sich die Laufzeit des Algorithmus in Abhängigkeit von der Größe der Eingabe verhält. Sie wird oft in der sogenannten Big-O-Notation angegeben, die das Wachstum des Algorithmus in Bezug auf die Anzahl der Elemente in der Eingabe beschreibt.
+                    <ul>
+                        <li>
+                            <strong>O</strong> steht dabei für "Ordnung von" und gibt an, wie schnell der Algorithmus im schlimmsten Fall ausgeführt wird. Zum Beispiel bedeutet O(n^2), dass der Algorithmus quadratisch wächst, was bedeutet, dass die Laufzeit quadratisch mit der Anzahl der Elemente in der Eingabe zunimmt.
+                        </li>
+                        <li>
+                            <strong>n</strong> steht dabei für die Anzahl der Elemente in der Eingabe.
+                        </li>
+                        <li>
+                            <strong>k</strong> steht für die Anzahl der möglichen Werte, die die Elemente annehmen können.
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Autor:</strong> Der Autor des Algorithmus, falls bekannt.</li>
+                <li><strong>Jahr:</strong> Das Jahr, in dem der Algorithmus entwickelt wurde.</li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Shuffle</h3>
+            <p>Der Shuffle-Algorithmus ist ein einfacher Algorithmus, der die Elemente einer Liste zufällig neu anordnet. Er wird oft verwendet, um eine Liste vorzubereiten, bevor ein Sortieralgorithmus angewendet wird, um sicherzustellen, dass der Algorithmus nicht von der ursprünglichen Reihenfolge der Elemente beeinflusst wird.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n)</li>
+                </ul>
+            </div>
+
+                <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+for(let i = 0; i &lt; n; i++){
+    let randomIndex = Math.floor(Math.random() * n);
+    swap(i, randomIndex);
+}
+</pre>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); })()" class="btn btn-success">Teste den Shuffle</a>
+
+        </div>
+
+        <div>
+            <h3>Bogo Sort:</h3>
+            <p>Der Bogo Sort, auch bekannt als Permutation Sort oder Monkey Sort, ist ein äußerst ineffizienter Sortieralgorithmus, der die Elemente einer Liste zufällig neu anordnet und prüft, ob sie sortiert sind. Dieser Prozess wird so lange wiederholt, bis die Liste sortiert ist. Aufgrund seiner zufälligen Natur und der Tatsache, dass er im schlimmsten Fall eine nahezu unendliche Anzahl von Permutationen durchlaufen muss, hat der Bogo Sort keinen praktischen Nutzen und wird meist als Lehrbeispiel verwendet, um zu zeigen, wie ineffizient ein Algorithmus sein kann.</p>
+
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität im besten Fall:</strong> O(n)</li>
+                    <li><strong>Zeitkomplexität im schlechtesten Fall:</strong> Unendlich</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Bogosort" target="_blank">Bogo Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+while(!isSorted()){
+    shuffle();
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/ExperimentalBogosort.png" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(5); await shuffle(); resetStats(); await bogoSort(); })()" class="btn btn-success">Teste den Bogo Sort</a>
+
+        </div>
+        <div>
+            <h3>Bubble Sort:</h3>
+            <p>Der Bubble Sort ist ein einfacher, aber ineffizienter Sortieralgorithmus, der wiederholt benachbarte Elemente vergleicht und vertauscht, wenn sie in der falschen Reihenfolge sind. Dies wird so lange wiederholt, bis keine Vertauschungen mehr nötig sind, was bedeutet, dass die Liste sortiert ist. Der Name "Bubble Sort" kommt daher, dass die kleineren Elemente wie Blasen an die Oberfläche steigen.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autor:</strong> Ivan Sutherland und Bob Floyd</li>
+                    <li><strong>Jahr:</strong> 1962</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Bubblesort" target="_blank">Bubble Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+for(let i = 0; i &lt; n; i++){
+    for(let j = 1; j &lt; n; j++){
+        if(array[j-1] &gt; array[j]){
+            swap(j-1, j);
+        }
+    }
+}
+</pre>
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Bubble_sort_animation.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await bubbleSort(); })()" class="btn btn-success">Teste den Bubble Sort</a>
+
+        </div>
+        <div>
+            <h3>Selection Sort:</h3>
+            <p>Der Selection Sort ist ein Sortieralgorithmus, der die Liste in zwei Teile teilt: den sortierten und den unsortierten Teil. Der Algorithmus wiederholt den Prozess, das kleinste Element aus dem unsortierten Teil zu finden und es an die richtige Position im sortierten Teil zu verschieben. Dieser Prozess wird fortgesetzt, bis die gesamte Liste sortiert ist.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autor:</strong> Edward H. Friend</li>
+                    <li><strong>Jahr:</strong> 1956</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Selectionsort" target="_blank">Selection Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+for(let i = 0; i &lt; n; i++){
+    let min = i;
+    for(let j = i+1; j &lt; n; j++){
+        if(array[j] &lt; array[min]){
+            min = j;
+        }
+    }
+    if(min !== i){
+        swap(i, min);
+    }
+}
+</pre>
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/94/Selection-Sort-Animation.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Selection_sort_animation.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await selectionSort(); })()" class="btn btn-success">Teste den Selection Sort</a>
+
+        </div>
+        <div>
+            <h3>Insertion Sort:</h3>
+            <p>Der Insertion Sort ist ein einfacher Sortieralgorithmus, der die Elemente der Liste nacheinander durchgeht und jedes Element in die richtige Position in der bereits sortierten Teilliste einfügt. Dies wird erreicht, indem man die Elemente mit den vorhergehenden Elementen vergleicht und sie so lange verschiebt, bis das aktuelle Element an der richtigen Stelle steht.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autor:</strong> John von Neumann</li>
+                    <li><strong>Jahr:</strong> 1946</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Insertionsort" target="_blank">Insertion Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+for(let i = 1; i &lt; n; i++){
+    let key = array[i];
+    let j = i - 1;
+    while(j &gt;= 0 &amp;&amp; array[j] &gt; key){
+        array[j+1] = array[j];
+        j = j - 1;
+    }
+    array[j+1] = key;
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Insertion_sort.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await insertionSort(); })()" class="btn btn-success">Teste den Insertion Sort</a>
+
+        </div>
+        <div>
+            <h3>Merge Sort:</h3>
+            <p>Der Merge Sort ist ein effizienter, vergleichsbasierter Sortieralgorithmus, der auf dem Prinzip "Teile und herrsche" basiert. Er teilt die Liste wiederholt in zwei Hälften, sortiert jede Hälfte rekursiv und führt die beiden sortierten Hälften zusammen. Der Algorithmus zeichnet sich durch seine stabile Sortierung und seine Zeitkomplexität von O(n log n) aus.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n log n)</li>
+                    <li><strong>Autor:</strong> John von Neumann</li>
+                    <li><strong>Jahr:</strong> 1945</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Mergesort" target="_blank">Merge Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function mergeSort(array){
+    if(array.length &lt;= 1){
+        return array;
+    }
+    let middle = Math.floor(array.length / 2);
+    let left = array.slice(0, middle);
+    let right = array.slice(middle);
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right){
+    let result = [];
+    let i = 0;
+    let j = 0;
+    while(i &lt; left.length &amp;&amp; j &lt; right.length){
+        if(left[i] &lt; right[j]){
+            result.push(left[i]);
+            i++;
+        }else{
+            result.push(right[j]);
+            j++;
+        }
+    }
+    return result.concat(left.slice(i)).concat(right.slice(j));
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Merge_sort_animation2.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await mergeSort(); })()" class="btn btn-success">Teste den Merge Sort</a>
+
+        </div>
+        <div>
+            <h3>Quick Sort:</h3>
+            <p>Der Quick Sort ist ein effizienter, vergleichsbasierter Sortieralgorithmus, der ebenfalls auf dem Prinzip "Teile und herrsche" basiert. Er wählt ein "Pivot"-Element aus der Liste aus, teilt die Liste in zwei Unterlisten – eine mit Elementen, die kleiner sind als das Pivot, und eine mit Elementen, die größer sind – und sortiert diese Unterlisten rekursiv. Der Algorithmus ist bekannt für seine gute durchschnittliche Leistung und seine Zeitkomplexität von O(n log n).</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n log n)</li>
+                    <li><strong>Autor:</strong> Tony Hoare</li>
+                    <li><strong>Jahr:</strong> 1960</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Quicksort" target="_blank">Quick Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function quickSort(array, low, high){
+    if(low &lt; high){
+        let pi = partition(array, low, high);
+        quickSort(array, low, pi - 1);
+        quickSort(array, pi + 1, high);
+    }
+}
+
+function partition(array, low, high){
+    let pivot = array[high];
+    let i = low - 1;
+    for(let j = low; j &lt; high; j++){
+        if(array[j] &lt; pivot){
+            i++;
+            swap(array, i, j);
+        }
+    }
+    swap(array, i + 1, high);
+    return i + 1;
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await quickSort(); })()" class="btn btn-success">Teste den Quick Sort</a>
+
+        </div>
+        <div>
+            <h3>Heap Sort:</h3>
+            <p>Der Heap Sort ist ein effizienter, vergleichsbasierter Sortieralgorithmus, der die Elemente der Liste in einen Heap umwandelt und sie dann sortiert, indem er wiederholt das größte Element entfernt und an das Ende der sortierten Liste stellt.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n log n)</li>
+                    <li><strong>Autor:</strong> J. W. J. Williams</li>
+                    <li><strong>Jahr:</strong> 1964</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Heapsort" target="_blank">Heap Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function heapSort(array){
+    let n = array.length;
+    for(let i = Math.floor(n / 2) - 1; i &gt;= 0; i--){
+        heapify(array, n, i);
+    }
+    for(let i = n - 1; i &gt;= 0; i--){
+        swap(array, 0, i);
+        heapify(array, i, 0);
+    }
+}
+
+function heapify(array, n, i){
+    let largest = i;
+    let l = 2 * i + 1;
+    let r = 2 * i + 2;
+    if(l &lt; n &amp;&amp; array[l] &gt; array[largest]){
+        largest = l;
+    }
+    if(r &lt; n &amp;&amp; array[r] &gt; array[largest]){
+        largest = r;
+    }
+    if(largest !== i){
+        swap(array, i, largest);
+        heapify(array, n, largest);
+    }
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Heapsort-example.gif" alt="" loading="lazy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await heapSort(); })()" class="btn btn-success">Teste den Heap Sort</a>
+
+        </div>
+        <div>
+            <h3>Radix Sort:</h3>
+            <p>Der Radix Sort ist ein nicht vergleichsbasierter Sortieralgorithmus, der die Elemente nach ihren Ziffern sortiert, beginnend mit der niederwertigsten Ziffer. Er verwendet einen stabilen Hilfssortieralgorithmus wie Counting Sort, um die Elemente basierend auf ihren Ziffern zu sortieren.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(nk)</li>
+                    <li><strong>Autor:</strong> Herman Hollerith</li>
+                    <li><strong>Jahr:</strong> 1887</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Radixsort" target="_blank">Radix Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function countingSort(array, exp){
+    let output = new Array(array.length);
+    let count = new Array(10).fill(0);
+    for(let i = 0; i &lt; array.length; i++){
+        count[Math.floor(array[i] / exp) % 10]++;
+    }
+
+    for(let i = 1; i &lt; 10; i++){
+        count[i] += count[i - 1];
+    }
+
+    for(let i = array.length - 1; i &gt;= 0; i--){
+        output[count[Math.floor(array[i] / exp) % 10] - 1] = array[i];
+        count[Math.floor(array[i] / exp) % 10]--;
+    }
+
+    for(let i = 0; i &lt; array.length; i++){
+        array[i] = output[i];
+    }
+}
+
+function radixSort(array){
+    let max = Math.max(...array);
+    for(let exp = 1; Math.floor(max / exp) &gt; 0; exp *= 10){
+        countingSort(array, exp);
+    }
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.gif" alt="" loading="lazy">
+                <img src="https://en.oi-wiki.org/basic/images/radix-sort-1.png" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await radixSort(); })()" class="btn btn-success">Teste den Radix Sort</a>
+
+        </div>
+        <div>
+            <h3>Shell Sort:</h3>
+            <p>Der Shell Sort ist ein effizienter, vergleichsbasierter Sortieralgorithmus, der die Liste in mehrere Teile teilt und diese Teile separat sortiert. Er verwendet eine sich verringernde Sequenz von Intervallen, um die Liste zu sortieren, was dazu führt, dass die Liste schneller konvergiert.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n log n)</li>
+                    <li><strong>Autor:</strong> Donald Shell</li>
+                    <li><strong>Jahr:</strong> 1959</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Shellsort" target="_blank">Shell Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function shellSort(array){
+    let n = array.length;
+    for(let gap = Math.floor(n / 2); gap &gt; 0; gap = Math.floor(gap / 2)){
+        for(let i = gap; i &lt; n; i++){
+            let temp = array[i];
+            let j;
+            for(j = i; j &gt;= gap &amp;&amp; array[j - gap] &gt; temp; j -= gap){
+                array[j] = array[j - gap];
+            }
+            array[j] = temp;
+        }
+    }
+}
+
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Sorting_shellsort_anim.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await shellSort(); })()" class="btn btn-success">Teste den Shell Sort</a>
+
+        </div>
+        <div>
+            <h3>Counting Sort:</h3>
+            <p>Der Counting Sort ist ein nicht vergleichsbasierter Sortieralgorithmus, der die Elemente der Liste nach ihrer Häufigkeit sortiert. Er verwendet ein Zähl-Array, um die Häufigkeit jedes Elements zu zählen und diese Zählungen dann zu verwenden, um die Elemente in die richtige Reihenfolge zu bringen.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n + k)</li>
+                    <li><strong>Jahr:</strong> Unbekannt</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Countingsort" target="_blank">Counting Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function countingSort(array){
+    let n = array.length;
+    let max = Math.max(...array);
+    let min = Math.min(...array);
+    let range = max - min + 1;
+    let count = new Array(range).fill(0);
+    let output = new Array(n).fill(0);
+
+    for(let i = 0; i &lt; n; i++){
+        count[array[i] - min]++;
+    }
+
+    for(let i = 1; i &lt; count.length; i++){
+        count[i] += count[i - 1];
+    }
+
+    for(let i = n - 1; i &gt;= 0; i--){
+        output[count[array[i] - min] - 1] = array[i];
+        count[array[i] - min]--;
+    }
+
+    for(let i = 0; i &lt; n; i++){
+        array[i] = output[i];
+    }
+
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Counting_Sort_Animation.gif" alt="" loading="lazy">
+                <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210219152324/ezgif.com-gif-maker2.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await countingSort(); })()" class="btn btn-success">Teste den Counting Sort</a>
+
+        </div>
+        <div>
+            <h3>Cocktail Sort:</h3>
+            <p>Der Cocktail Sort, auch bekannt als Bidirectional Bubble Sort, ist eine Variante des Bubble Sort, die die Elemente in beide Richtungen sortiert. Der Algorithmus geht wiederholt von links nach rechts und dann von rechts nach links durch die Liste und vertauscht benachbarte Elemente, die in der falschen Reihenfolge sind.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autor:</strong> Edward H. Friend</li>
+                    <li><strong>Jahr:</strong> 1956</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Cocktailsort" target="_blank">Cocktail Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function cocktailSort(array){
+    let n = array.length;
+    let swapped = true;
+    let start = 0;
+    let end = n - 1;
+
+    while(swapped){
+        swapped = false;
+
+        for(let i = start; i &lt; end; i++){
+            if(array[i] &gt; array[i + 1]){
+                swap(array, i, i + 1);
+                swapped = true;
+            }
+        }
+
+        if(!swapped) break;
+
+        swapped = false;
+        end--;
+
+        for(let i = end - 1; i &gt;= start; i--){
+            if(array[i] &gt; array[i + 1]){
+                swap(array, i, i + 1);
+                swapped = true;
+            }
+        }
+
+        start++;
+    }
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Sorting_shaker_sort_anim.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await cocktailSort(); })()" class="btn btn-success">Teste den Cocktail Sort</a>
+
+        </div>
+        <div>
+            <h3>Comb Sort:</h3>
+            <p>Der Comb Sort ist eine Variante des Bubble Sort, die versucht, dessen Hauptproblem – kleine benachbarte Vertauschungen – zu beheben, indem sie größere Abstände zwischen den verglichenen Elementen verwendet. Der Algorithmus beginnt mit einem großen Abstand und verringert diesen schrittweise, bis er auf 1 reduziert ist.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autoren:</strong> Wlodzimierz Dobosiewicz und Stephen Lacey, Richard Box</li>
+                    <li><strong>Jahr:</strong> 1980 bzw. 1981</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Combsort" target="_blank">Comb Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function combSort(array){
+    let n = array.length;
+    let gap = n;
+    let swapped = true;
+
+    while(gap !== 1 || swapped){
+        gap = Math.floor(gap / 1.3);
+        if(gap &lt; 1) gap = 1;
+        swapped = false;
+
+        for(let i = 0; i &lt; n - gap; i++){
+            if(array[i] &gt; array[i + gap]){
+                swap(array, i, i + gap);
+                swapped = true;
+            }
+        }
+    }
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Comb_sort_demo.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await combSort(); })()" class="btn btn-success">Teste den Comb Sort</a>
+
+        </div>
+        <div>
+            <h3>Gnome Sort:</h3>
+            <p>Der Gnome Sort, auch bekannt als Stupid Sort, ist ein einfacher Sortieralgorithmus, der die Elemente der Liste nacheinander durchgeht und sie an die richtige Stelle verschiebt. Der Algorithmus funktioniert ähnlich wie der Insertion Sort, indem er Elemente wiederholt mit den vorhergehenden vergleicht und sie vertauscht, wenn sie in der falschen Reihenfolge sind.</p>
+            <div>
+                <h5>Details:</h5>
+                <ul>
+                    <li><strong>Zeitkomplexität:</strong> O(n^2)</li>
+                    <li><strong>Autor:</strong> Hamid Sarbazi-Azad</li>
+                    <li><strong>Jahr:</strong> 2000</li>
+                </ul>
+            </div>
+
+            Wikipedia: <a href="https://de.wikipedia.org/wiki/Gnomesort" target="_blank">Gnome Sort</a>
+
+<!--            Psuedocode-->
+            <h5>Pseudocode:</h5>
+<pre class="bg-light p-2">
+function gnomeSort(array){
+    let index = 0;
+    while(index &lt; array.length){
+        if(index === 0 || array[index] &gt;= array[index - 1]){
+            index++;
+        }else{
+            swap(array, index, index - 1);
+            index--;
+        }
+    }
+}
+</pre>
+
+            <div>
+                <h5>Beispiel:</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Sorting_gnomesort_anim.gif" alt="" loading="lazy">
+            </div>
+
+            <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await gnomeSort(); })()" class="btn btn-success">Teste den Gnome Sort</a>
+
+        </div>
+
+
+    </div>
+
+    <footer style="background-color: #f8f9fa; padding: 20px; text-align: center; margin-top: 20px;">
+        <p>&copy; 2024 Leon Rabe. Alle Rechte vorbehalten.</p>
+        <p>
+            <a href="https://leonlp9.github.io/PrivatLinkTree/">Kontakt</a>
+        </p>
+    </footer>
+
+    <script>
+        let valueArray = []
+        let speed = 20;
+
+        let reads = 0;
+        let writes = 0;
+
+        let selectedBarIndex = null;
+
+        function resetStats(){
+            reads = 0;
+            writes = 0;
+            updateStats();
+        }
+
+        function updateStats(){
+            document.getElementById("reads").innerText = reads;
+            document.getElementById("writes").innerText = writes;
+        }
+
+        function updateSpeed(){
+            speed = document.getElementById("speed").value;
+        }
+
+        function delay(milliseconds){
+            if(document.getElementById("delayEnabled").checked === false)
+            return 0;
+            return new Promise(resolve => {
+                setTimeout(resolve, milliseconds);
+            });
+        }
+
+        async function handleBarClick(index) {
+            if (selectedBarIndex === null) {
+                // Wenn noch kein Balken ausgewählt wurde, speichern Sie den Index dieses Balkens
+                selectedBarIndex = index;
+
+                let bars = document.getElementById("sortArea").children;
+                bars[index].classList.add("bar-selected");
+
+            } else {
+                // Wenn bereits ein Balken ausgewählt wurde, tauschen die Positionen der beiden Balken
+                await swap(selectedBarIndex, index);
+
+                let bars = document.getElementById("sortArea").children;
+                bars[selectedBarIndex].classList.remove("bar-selected");
+
+                // Setzen Sie die ausgewählte Balkenindexvariable zurück
+                selectedBarIndex = null;
+                isSorted();
+            }
+        }
+
+        createBars(256);
+        function createBars(length){
+            //todo: alle asynchronen Funktionen abbrechen
+
+
+            //alle childs löschen
+            document.getElementById("sortArea").innerHTML = "";
+            document.getElementById("tableContainer").innerHTML = "";
+            valueArray = [];
+            let twiceNumbers = document.getElementById("twiceNumbers").checked;
+
+            //valueArray mit werten von 1 bis 100 füllen
+            for (let i = 0; i < length; i++) {
+                if (!twiceNumbers)
+                    valueArray[i] = i + 1;
+                else
+                    if (i > 1)
+                        valueArray[i] = valueArray[i - 1] + Math.floor(Math.random() * 3);
+                    else
+                        valueArray[i] =  Math.floor(Math.random() * 3);
+            }
+
+            for (let i = 0; i < valueArray.length; i++) {
+                //neues Element in sortArea einfügen
+                let bar = document.createElement("div");
+                bar.style.width = 100 + "%";
+                bar.addEventListener('click', function() {
+                    handleBarClick(i);
+                });
+                document.getElementById("sortArea").appendChild(bar);
+            }
+
+            updateBars();
+            isSorted();
+        }
+
+        function showArrayAsTable(array, title){
+            let table = document.createElement("table");
+            table.id = title + "Table";
+
+            //erste reihe ist der index
+            let tr = document.createElement("tr");
+            for(let i = 0; i < array.length; i++){
+                let th = document.createElement("th");
+                th.innerText = i;
+                tr.appendChild(th);
+            }
+
+            //zweite reihe ist der wert
+            let tr2 = document.createElement("tr");
+            for(let i = 0; i < array.length; i++){
+                let td = document.createElement("td");
+                td.innerText = array[i];
+                tr2.appendChild(td);
+            }
+
+            table.appendChild(tr);
+            table.appendChild(tr2);
+            document.getElementById("tableContainer").appendChild(table);
+        }
+
+        function highlightTableRow(title, index){
+            let table = document.getElementById(title + "Table");
+            if(table !== null){
+                let tr = table.children[1];
+                for(let i = 0; i < tr.children.length; i++){
+                    //wenn index übereinstimmt, dann grün ansonsten lösch die farbe aus dem element, damit die der klasse greift
+                    if(i === index){
+                        tr.children[i].style.backgroundColor = "green";
+                    }else{
+                        tr.children[i].style.backgroundColor = "";
+                    }
+                }
+            }
+        }
+
+        function deleteTable(title){
+            let table = document.getElementById(title + "Table");
+            if(table !== null){
+                table.remove();
+            }
+        }
+
+
+        async function shuffle(){
+
+            //alle elemente auf schwarz setzen
+            let bars = document.getElementById("sortArea").children;
+            for (let i = 0; i < valueArray.length; i++) {
+                bars[i].style.backgroundColor = "black";
+            }
+
+            for (let i = 0; i < valueArray.length; i++) {
+                let randomIndex = Math.floor(Math.random() * valueArray.length);
+                await swap(i, randomIndex);
+            }
+        }
+
+        async function swap(i, j){
+            let temp = valueArray[i];
+            valueArray[i] = valueArray[j];
+            valueArray[j] = temp;
+
+            //farbe beider elemente kurz ändern
+            let bars = document.getElementById("sortArea").children;
+            bars[i].style.backgroundColor = "red";
+            bars[j].style.backgroundColor = "red";
+            writes += 2;
+            updateStats();
+            updateBars();
+            await delay(speed);
+            bars[i].style.backgroundColor = "black";
+            bars[j].style.backgroundColor = "black";
+        }
+
+        async function readAt(i){
+            let bars = document.getElementById("sortArea").children;
+            bars[i].style.backgroundColor = "blue";
+            reads++;
+            updateStats();
+            await delay(speed);
+            bars[i].style.backgroundColor = "black";
+            return valueArray[i];
+        }
+
+        async function writeAt(i, value){
+            valueArray[i] = value;
+            let bars = document.getElementById("sortArea").children;
+            bars[i].style.backgroundColor = "yellow";
+            writes++;
+            updateStats();
+            await delay(speed);
+            bars[i].style.backgroundColor = "black";
+            updateBars();
+        }
+
+        function getHighestNumber(){
+            let highestNumber = 0;
+            for(let i = 0; i < valueArray.length; i++){
+                if(valueArray[i] > highestNumber){
+                    highestNumber = valueArray[i];
+                }
+            }
+            return highestNumber;
+        }
+
+        function updateBars(){
+            let bars = document.getElementById("sortArea").children;
+            for (let i = 0; i < valueArray.length; i++) {
+                bars[i].style.height = valueArray[i] / getHighestNumber() * 100 + "%";
+                //bars[i].innerText = valueArray[i];
+            }
+        }
+
+        function isSorted(){
+            for(let i = 0; i < valueArray.length; i++){
+                if(i+1 < valueArray.length && valueArray[i] > valueArray[i+1]){
+                    //alle elemente auf schwarz setzen
+                    let bars = document.getElementById("sortArea").children;
+                    for (let i = 0; i < valueArray.length; i++) {
+                        bars[i].style.backgroundColor = "black";
+                    }
+
+                    return false;
+                }
+            }
+            //alle elemente auf grün setzen
+            let bars = document.getElementById("sortArea").children;
+            for (let i = 0; i < valueArray.length; i++) {
+                bars[i].style.backgroundColor = "green";
+            }
+            return true;
+        }
+
+
+
+        //Sortieralgorithmen
+
+        async function bubbleSort() {
+            if (!isSorted()) {
+                let n = valueArray.length;
+                let swapped;
+                do {
+                    swapped = false;
+                    for (let i = 1; i < n; i++) {
+                        if (await readAt(i - 1) > await readAt(i)) {
+                            await swap(i - 1, i);
+                            swapped = true;
+                        }
+                    }
+                    n--;
+                } while (swapped);
+                isSorted();
+            }
+        }
+
+        async function selectionSort(){
+            if (!isSorted()) {
+                let n = valueArray.length;
+                for (let i = 0; i < n; i++) {
+                    let min = i;
+                    for (let j = i + 1; j < n; j++) {
+                        if (await readAt(j) < await readAt(min)) {
+                            min = j;
+                        }
+                    }
+                    if (min !== i) {
+                        await swap(i, min);
+                    }
+                }
+                isSorted();
+            }
+        }
+
+        async function bogoSort(){
+            while(!isSorted()){
+                await shuffle();
+            }
+        }
+
+        async function insertionSort(){
+            if (!isSorted()) {
+                let n = valueArray.length;
+                for (let i = 1; i < n; i++) {
+                    let key = await readAt(i);
+                    let j = i - 1;
+                    while (j >= 0 && await readAt(j) > key) {
+                        await swap(j + 1, j);
+                        j = j - 1;
+                    }
+                    valueArray[j + 1] = key;
+                }
+                isSorted();
+            }
+        }
+
+        async function mergeSort(){
+            async function merge(start, middle, end){
+                let left = valueArray.slice(start, middle);
+                let right = valueArray.slice(middle, end);
+                let i = 0;
+                let j = 0;
+                let k = start;
+                while(i < left.length && j < right.length){
+                    if(left[i] < right[j]){
+                        await writeAt(k, left[i])
+                        i++;
+                    }else{
+                        await writeAt(k, right[j])
+                        j++;
+                    }
+                    k++;
+                }
+                while(i < left.length){
+                    await writeAt(k, left[i])
+                    i++;
+                    k++;
+                }
+                while(j < right.length){
+                    await writeAt(k, right[j])
+                    j++;
+                    k++;
+                }
+                updateBars();
+            }
+
+            async function mergeSortRecursive(start, end){
+                if(end - start > 1){
+                    let middle = Math.floor((start + end) / 2);
+                    await mergeSortRecursive(start, middle);
+                    await mergeSortRecursive(middle, end);
+                    await merge(start, middle, end);
+                    await delay(speed);
+                }
+            }
+
+            if (!isSorted()) await mergeSortRecursive(0, valueArray.length);
+            isSorted();
+        }
+
+        async function quickSort(){
+            async function partition(low, high){
+                let pivot = await readAt(high);
+                let i = low - 1;
+                for(let j = low; j < high; j++){
+                    if(await readAt(j) < pivot){
+                        i++;
+                        await swap(i, j);
+                    }
+                }
+                await swap(i + 1, high);
+                return i + 1;
+            }
+
+            async function quickSortRecursive(low, high){
+                if(low < high){
+                    let pi = await partition(low, high);
+                    await quickSortRecursive(low, pi - 1);
+                    await quickSortRecursive(pi + 1, high);
+                }
+            }
+            if (!isSorted()) await quickSortRecursive(0, valueArray.length - 1);
+            isSorted();
+        }
+
+        async function heapSort(){
+            async function heapify(n, i){
+                let largest = i;
+                let l = 2 * i + 1;
+                let r = 2 * i + 2;
+                if(l < n && await readAt(l) > await readAt(largest)){
+                    largest = l;
+                }
+                if(r < n && await readAt(r) > await readAt(largest)){
+                    largest = r;
+                }
+                if(largest !== i){
+                    await swap(i, largest);
+                    await heapify(n, largest);
+                }
+            }
+
+            if (!isSorted()){
+                let n = valueArray.length;
+                for(let i = Math.floor(n / 2) - 1; i >= 0; i--){
+                    await heapify(n, i);
+                }
+                for(let i = n - 1; i >= 0; i--){
+                    await swap(0, i);
+                    await heapify(i, 0);
+                }
+            }
+
+            isSorted();
+        }
+
+        async function radixSort(){
+            async function countingSort(exp){
+                let output = new Array(valueArray.length);
+                let count = new Array(10).fill(0);
+
+                showArrayAsTable(count, "count")
+
+                for(let i = 0; i < valueArray.length; i++){
+                    count[Math.floor(valueArray[i] / exp) % 10]++;
+                    deleteTable("count")
+                    showArrayAsTable(count, "count")
+                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10);
+                    await readAt(i);
+                }
+
+                for(let i = 1; i < 10; i++){
+                    count[i] += count[i - 1];
+                }
+
+                for(let i = valueArray.length - 1; i >= 0; i--){
+                    output[count[Math.floor(valueArray[i] / exp) % 10] - 1] = valueArray[i];
+                    count[Math.floor(valueArray[i] / exp) % 10]--;
+                }
+
+                for(let i = 0; i < valueArray.length; i++){
+                    await writeAt(i, output[i]);
+                    highlightTableRow("count", Math.floor(valueArray[i] / exp) % 10);
+                }
+
+                updateBars();
+                deleteTable("count")
+            }
+
+            if (!isSorted()) {
+                let max = Math.max(...valueArray);
+                for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+                    await countingSort(exp);
+                    await delay(speed);
+                }
+            }
+            isSorted();
+        }
+
+        async function shellSort() {
+            if (!isSorted()) {
+                let n = valueArray.length;
+                for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+                    for (let i = gap; i < n; i++) {
+                        let temp = await readAt(i);
+                        let j;
+                        for (j = i; j >= gap && await readAt(j - gap) > temp; j -= gap) {
+                            await swap(j, j - gap);
+                        }
+                        valueArray[j] = temp;
+                    }
+                    updateBars();
+                    await delay(speed);
+                }
+                isSorted();
+            }
+        }
+
+        async function countingSort() {
+            if (!isSorted()) {
+
+                //mit visualisierung
+                let n = valueArray.length;
+                let max = Math.max(...valueArray);
+                let min = Math.min(...valueArray);
+                let range = max - min + 1;
+                let count = new Array(range).fill(0);
+                let output = new Array(n).fill(0);
+
+                showArrayAsTable(count, "count");
+
+                for (let i = 0; i < n; i++) {
+                    count[valueArray[i] - min]++;
+                    deleteTable("count");
+                    showArrayAsTable(count, "count");
+                    highlightTableRow("count", valueArray[i] - min);
+                    await readAt(i);
+                }
+
+
+                for (let i = 1; i < count.length; i++) {
+                    count[i] += count[i - 1];
+                }
+
+                for (let i = n - 1; i >= 0; i--) {
+                    output[count[valueArray[i] - min] - 1] = valueArray[i];
+                    count[valueArray[i] - min]--;
+                }
+
+                for (let i = 0; i < n; i++) {
+                    await writeAt(i, output[i]);
+                    highlightTableRow("count", valueArray[i] - min);
+                }
+
+                deleteTable("count");
+
+                updateBars();
+                await delay(speed);
+                isSorted();
+            }
+        }
+
+        async function cocktailSort() {
+            if (!isSorted()) {
+                let n = valueArray.length;
+                let swapped = true;
+                let start = 0;
+                let end = n - 1;
+
+                while (swapped) {
+                    swapped = false;
+
+                    for (let i = start; i < end; i++) {
+                        if (await readAt(i) > await readAt(i + 1)) {
+                            await swap(i, i + 1);
+                            swapped = true;
+                        }
+                    }
+
+                    if (!swapped) break;
+
+                    swapped = false;
+                    end--;
+
+                    for (let i = end - 1; i >= start; i--) {
+                        if (await readAt(i) > await readAt(i + 1)) {
+                            await swap(i, i + 1);
+                            swapped = true;
+                        }
+                    }
+
+                    start++;
+                }
+                isSorted();
+            }
+        }
+
+        async function combSort() {
+            if (!isSorted()) {
+                let n = valueArray.length;
+                let gap = n;
+                let swapped = true;
+
+                while (gap !== 1 || swapped) {
+                    gap = Math.floor(gap / 1.3);
+                    if (gap < 1) gap = 1;
+                    swapped = false;
+
+                    for (let i = 0; i < n - gap; i++) {
+                        if (await readAt(i) > await readAt(i + gap)) {
+                            await swap(i, i + gap);
+                            swapped = true;
+                        }
+                    }
+                    await delay(speed);
+                }
+                isSorted();
+            }
+        }
+
+        async function gnomeSort() {
+            if (!isSorted()) {
+                let index = 0;
+                while (index < valueArray.length) {
+                    if (index === 0 || await readAt(index) >= await readAt(index - 1)) {
+                        index++;
+                    } else {
+                        await swap(index, index - 1);
+                        index--;
+                    }
+                    await delay(speed);
+                }
+                isSorted();
+            }
+        }
+
+    </script>
+</body>
+</html>
