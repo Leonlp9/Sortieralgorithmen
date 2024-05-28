@@ -59,7 +59,7 @@
             min-height: 200px;
             height: calc(100vh - 240px);
             border: 1px solid black;
-            margin: 10px;
+            margin: 0 10px 10px;
             display: flex;
             flex-direction: column;
             background: #efefef;
@@ -161,6 +161,8 @@
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid #dee2e6;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .header-container {
@@ -199,10 +201,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
 
     <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px">
-        <span style="color: blue">■</span> <span>Lesen</span>
-        <span style="color: red">■</span> <span>Tauschen</span>
-        <span style="color: yellow">■</span> <span>Schreiben</span>
-        <span style="color: green">■</span> <span>Fertig</span>
+        <p><span style="color: blue">■</span> <span>Lesen</span></p>
+        <p><span style="color: red">■</span> <span>Tauschen</span></p>
+        <p><span style="color: yellow">■</span> <span>Schreiben</span></p>
+        <p><span style="color: green">■</span> <span>Fertig</span></p>
     </div>
 
     <div id="sort">
@@ -1467,7 +1469,7 @@ function flip(array, i){
             //alle elemente auf schwarz setzen
             let bars = document.getElementById("sortArea").children;
             for (let i = 0; i < valueArray.length; i++) {
-                bars[i].style.backgroundColor = "black";
+                setDefaultColor(i)
             }
 
             for (let i = 0; i < valueArray.length; i++) {
