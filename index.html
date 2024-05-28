@@ -33,7 +33,7 @@
 
         #sort{
             min-height: 200px;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 240px);
             border: 1px solid black;
             margin: 10px;
             display: flex;
@@ -132,11 +132,55 @@
 
         }
 
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .header-container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #6c757d;
+        }
+
     </style>
 </head>
+<header>
+    <div class="header-container">
+        <h1>Sortieralgorithmen Visualisierung</h1>
+        <p>Eine Webanwendung zur Visualisierung verschiedener Sortieralgorithmen</p>
+    </div>
+</header>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+
+    <div id="sort">
+        <div>
+            <span style="color: blue">■</span> Reads: <span id="reads">0</span> |
+            <span style="color: yellow">■</span><span style="color: red">■</span><span style="font-size: 10px"></span> Writes: <span id="writes">0</span>
+            <button onclick="resetStats()" class="btn btn-danger" style="height: 20px; font-size: 11px; padding: 0 4px; margin: 0 5px">
+                Reset
+            </button>
+        </div>
+        <div id="sortArea">
+
+        </div>
+        <div id="tableContainer">
+
+        </div>
+    </div>
 
     <div style="display: flex; align-items: center; margin: 10px 0; justify-content: space-evenly; flex-wrap: wrap">
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
@@ -161,22 +205,6 @@
             <label for="speed" id="speedLabel">Delay: </label>
             <input type="checkbox" id="delayEnabled" style="margin-right: 10px" title="Wenn deaktiviert, wird der Algorithmus ohne Verzögerung ausgeführt (Nur die Systemgeschwindigkeit)" checked>
             <input type="range" min="1" max="1000" value="20" step="1" oninput="updateSpeed()" id="speed" style="width: 250px" class="custom-range" title="Delay in ms">
-        </div>
-    </div>
-
-    <div id="sort">
-        <div>
-            <span style="color: blue">■</span> Reads: <span id="reads">0</span> |
-            <span style="color: yellow">■</span><span style="color: red">■</span><span style="font-size: 10px"></span> Writes: <span id="writes">0</span>
-            <button onclick="resetStats()" class="btn btn-danger" style="height: 20px; font-size: 11px; padding: 0 4px; margin: 0 5px">
-                Reset
-            </button>
-        </div>
-        <div id="sortArea">
-
-        </div>
-        <div id="tableContainer">
-
         </div>
     </div>
 
