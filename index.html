@@ -1272,7 +1272,7 @@ function gnomeSort(array){
                 let left = valueArray.slice(start, middle);
                 let right = valueArray.slice(middle, end);
                 showArrayAsTable(left, "left")
-                showArrayAsTable(right, "right")
+                showArrayAsTable(new Array(right.length).fill(0), "right")
 
                 //von start bis mitte einmal alle blau färben
                 for(let i = start; i < middle; i++){
@@ -1296,6 +1296,8 @@ function gnomeSort(array){
                 }
                 reads += right.length;
                 updateStats();
+                deleteTable("right")
+                showArrayAsTable(right, "right")
                 highlightTableRows("right", Array.from({length: right.length}, (_, i) => i), "write");
                 await delay(speed);
                 //zurücksetzen
