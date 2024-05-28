@@ -111,6 +111,23 @@
             background: #9f9f9f;
         }
 
+        #explanation > div > div{
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #explanation > div > div > a > img{
+            max-height: 300px;
+            width: 100%;
+
+            /*bild format beibehalten*/
+            object-fit: contain;
+
+            max-width: 500px;
+            margin-top: 10px;
+
+        }
+
     </style>
 </head>
 <body>
@@ -274,7 +291,9 @@ while(!isSorted()){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/0/0e/ExperimentalBogosort.png" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/ExperimentalBogosort.png" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(5); await shuffle(); resetStats(); await bogoSort(); })()" class="btn btn-success">Teste den Bogo Sort</a>
@@ -307,8 +326,12 @@ for(let i = 0; i &lt; n; i++){
 </pre>
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/3/37/Bubble_sort_animation.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Bubble_sort_animation.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await bubbleSort(); })()" class="btn btn-success">Teste den Bubble Sort</a>
@@ -345,8 +368,12 @@ for(let i = 0; i &lt; n; i++){
 </pre>
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/9/94/Selection-Sort-Animation.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/94/Selection-Sort-Animation.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Selection_sort_animation.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Selection_sort_animation.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await selectionSort(); })()" class="btn btn-success">Teste den Selection Sort</a>
@@ -382,8 +409,12 @@ for(let i = 1; i &lt; n; i++){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Insertion-sort-example-300px.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/4/42/Insertion_sort.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Insertion_sort.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await insertionSort(); })()" class="btn btn-success">Teste den Insertion Sort</a>
@@ -435,8 +466,12 @@ function merge(left, right){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/c/c5/Merge_sort_animation2.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Merge_sort_animation2.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await mergeSort(); })()" class="btn btn-success">Teste den Merge Sort</a>
@@ -483,8 +518,12 @@ function partition(array, low, high){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Quicksort-example.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Sorting_quicksort_anim.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await quickSort(); })()" class="btn btn-success">Teste den Quick Sort</a>
@@ -537,8 +576,12 @@ function heapify(array, n, i){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/4/4d/Heapsort-example.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Heapsort-example.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Sorting_heapsort_anim.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await heapSort(); })()" class="btn btn-success">Teste den Heap Sort</a>
@@ -592,8 +635,12 @@ function radixSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/0/04/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://en.oi-wiki.org/basic/images/radix-sort-1.png" target="_blank">
                 <img src="https://en.oi-wiki.org/basic/images/radix-sort-1.png" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await radixSort(); })()" class="btn btn-success">Teste den Radix Sort</a>
@@ -634,7 +681,9 @@ function shellSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/d/d8/Sorting_shellsort_anim.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Sorting_shellsort_anim.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await shellSort(); })()" class="btn btn-success">Teste den Shell Sort</a>
@@ -686,8 +735,12 @@ function countingSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/6/60/Counting_Sort_Animation.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Counting_Sort_Animation.gif" alt="" loading="lazy">
+                </a>
+                <a href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210219152324/ezgif.com-gif-maker2.gif" target="_blank">
                 <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210219152324/ezgif.com-gif-maker2.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await countingSort(); })()" class="btn btn-success">Teste den Counting Sort</a>
@@ -745,7 +798,9 @@ function cocktailSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/e/ef/Sorting_shaker_sort_anim.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Sorting_shaker_sort_anim.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await cocktailSort(); })()" class="btn btn-success">Teste den Cocktail Sort</a>
@@ -790,7 +845,9 @@ function combSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/4/46/Comb_sort_demo.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Comb_sort_demo.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await combSort(); })()" class="btn btn-success">Teste den Comb Sort</a>
@@ -828,7 +885,9 @@ function gnomeSort(array){
 
             <div>
                 <h5>Beispiel:</h5>
+                <a href="https://upload.wikimedia.org/wikipedia/commons/3/37/Sorting_gnomesort_anim.gif" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Sorting_gnomesort_anim.gif" alt="" loading="lazy">
+                </a>
             </div>
 
             <a href="#" onclick="(async () => { createBars(64); await shuffle(); resetStats(); await gnomeSort(); })()" class="btn btn-success">Teste den Gnome Sort</a>
@@ -898,7 +957,12 @@ function gnomeSort(array){
             }
         }
 
-        createBars(256);
+
+
+        //window breite geteilt durch 2
+        document.getElementById("input").value = Math.floor(window.innerWidth / 15);
+        createBars(document.getElementById("input").value);
+
         function createBars(length){
             //todo: alle asynchronen Funktionen abbrechen
 
