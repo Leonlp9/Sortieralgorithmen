@@ -194,6 +194,7 @@
             <button onclick="shuffle()" class="btn btn-primary">
                 Shuffle
             </button>
+            <button id="stopButton" class="btn btn-danger" onclick="stopSorting()">Stop Sorting</button>
         </div>
         <div>
             <span style="color: blue">■</span> <span>Lesen</span>
@@ -1209,6 +1210,19 @@ function flip(array, i){
         let writes = 0;
 
         let selectedBarIndex = null;
+        let shouldStop = false;
+
+        function stopSorting(){
+            shouldStop = !shouldStop;
+            document.getElementById("stopButton").innerText = shouldStop ? "Release" : "Stop Sorting";
+            if (!shouldStop){
+                document.getElementById("stopButton").classList.add("btn-danger");
+                document.getElementById("stopButton").classList.remove("btn-warning");
+            }else{
+                document.getElementById("stopButton").classList.remove("btn-danger");
+                document.getElementById("stopButton").classList.add("btn-warning");
+            }
+        }
 
         function resetStats(){
             reads = 0;
@@ -1228,8 +1242,16 @@ function flip(array, i){
         function delay(milliseconds){
             if(document.getElementById("delayEnabled").checked === false)
             return 0;
-            return new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 setTimeout(resolve, milliseconds);
+
+                if(shouldStop){
+
+                    updateStats();
+                    updateBars();
+
+                    reject(new Error("Promise wurde abgebrochen"));
+                }
             });
         }
 
@@ -1610,7 +1632,11 @@ function flip(array, i){
                 }
             }
 
-            if (!isSorted()) await mergeSortRecursive(0, valueArray.length);
+            if (!isSorted()){
+                deleteTable("left")
+                deleteTable("right")
+                await mergeSortRecursive(0, valueArray.length);
+            }
             isSorted();
         }
 
@@ -1704,6 +1730,7 @@ function flip(array, i){
             }
 
             if (!isSorted()) {
+                deleteTable("count");
                 let max = Math.max(...valueArray);
                 for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
                     await countingSort(exp);
@@ -1734,7 +1761,7 @@ function flip(array, i){
 
         async function countingSort() {
             if (!isSorted()) {
-
+                deleteTable("count")
                 //mit visualisierung
                 let n = valueArray.length;
                 let max = Math.max(...valueArray);
