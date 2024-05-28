@@ -166,6 +166,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
 
+    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px">
+        <span style="color: blue">■</span> <span>Lesen</span>
+        <span style="color: red">■</span> <span>Tauschen</span>
+        <span style="color: yellow">■</span> <span>Schreiben</span>
+        <span style="color: green">■</span> <span>Fertig</span>
+    </div>
+
     <div id="sort">
         <div>
             <span style="color: blue">■</span> Reads: <span id="reads">0</span> |
@@ -182,89 +189,90 @@
         </div>
     </div>
 
-    <div style="display: flex; align-items: center; margin: 10px 0; justify-content: space-evenly; flex-wrap: wrap">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-            <label for="input">How many Bars:</label>
-            <input type="number" id="input" placeholder="How many Bars" min="2" value="256" max="5000" style="width: 100px" onchange="createBars(this.value)">
-            <label for="twiceNumbers">Twice Numbers</label>
-            <input type="checkbox" id="twiceNumbers" style="margin-left: 10px">
-            <button onclick="createBars(document.getElementById('input').value)" class="btn btn-primary">
-                Create Bars
+    <div class="container">
+        <div style="display: flex; align-items: center; margin: 10px 0; justify-content: space-evenly; flex-wrap: wrap; gap: 10px">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+                <div class="input-group" style="width: auto">
+                    <label class="input-group-text" for="input">How many Bars:</label>
+                    <input type="number" class="form-control" id="input" placeholder="How many Bars" min="2" value="256" max="5000" style="width: 100px; flex: none" onchange="createBars(this.value)">
+                </div>
+                <label for="twiceNumbers">Twice Numbers</label>
+                <input type="checkbox" id="twiceNumbers" class="" style="margin-left: 10px">
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+                <button onclick="createBars(document.getElementById('input').value)" class="btn btn-primary">
+                    Create Bars
+                </button>
+                <button onclick="shuffle()" class="btn btn-primary">
+                    Shuffle
+                </button>
+                <button id="stopButton" class="btn btn-danger" onmousedown="stopSorting()" onmouseup="stopSorting(false)" onmouseleave="stopSorting(false)">Stop Sorting</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="speed" id="speedLabel">Delay: </label>
+                <input type="checkbox" id="delayEnabled" style="margin-right: 10px" title="Wenn deaktiviert, wird der Algorithmus ohne Verzögerung ausgeführt (Nur die Systemgeschwindigkeit)" checked>
+                <input type="range" min="1" max="1000" value="20" step="1" oninput="updateSpeed()" id="speed" style="width: 250px" class="custom-range" title="Delay in ms">
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
+            <!--    Sortieralgorithmen-->
+            <button onclick="bogoSort()" class="btn btn-secondary">
+                Bogo Sort
             </button>
-            <button onclick="shuffle()" class="btn btn-primary">
-                Shuffle
+            <button onclick="bubbleSort()" class="btn btn-secondary">
+                Bubble Sort
             </button>
-            <button id="stopButton" class="btn btn-danger" onclick="stopSorting()">Stop Sorting</button>
+            <button onclick="selectionSort()" class="btn btn-secondary">
+                Selection Sort
+            </button>
+            <button onclick="insertionSort()" class="btn btn-secondary">
+                Insertion Sort
+            </button>
+            <button onclick="mergeSort()" class="btn btn-secondary">
+                Merge Sort
+            </button>
+            <button onclick="quickSort()" class="btn btn-secondary">
+                Quick Sort
+            </button>
+            <button onclick="heapSort()" class="btn btn-secondary">
+                Heap Sort
+            </button>
+            <button onclick="radixSort()" class="btn btn-secondary">
+                Radix Sort
+            </button>
+            <button onclick="shellSort()" class="btn btn-secondary">
+                Shell Sort
+            </button>
+            <button onclick="countingSort()" class="btn btn-secondary">
+                Counting Sort
+            </button>
+            <button onclick="cocktailSort()" class="btn btn-secondary">
+                Cocktail Sort
+            </button>
+            <button onclick="combSort()" class="btn btn-secondary">
+                Comb Sort
+            </button>
+            <button onclick="gnomeSort()" class="btn btn-secondary">
+                Gnome Sort
+            </button>
+            <button onclick="oddEvenSort()" class="btn btn-secondary">
+                Odd-Even Sort
+            </button>
+            <button onclick="cycleSort()" class="btn btn-secondary">
+                Cycle Sort
+            </button>
+            <button onclick="stoogeSort()" class="btn btn-secondary">
+                Stooge Sort
+            </button>
+            <button onclick="pancakeSort()" class="btn btn-secondary">
+                Pancake Sort
+            </button>
         </div>
-        <div>
-            <span style="color: blue">■</span> <span>Lesen</span>
-            <span style="color: red">■</span> <span>Tauschen</span>
-            <span style="color: yellow">■</span> <span>Schreiben</span>
-            <span style="color: green">■</span> <span>Fertig</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <label for="speed" id="speedLabel">Delay: </label>
-            <input type="checkbox" id="delayEnabled" style="margin-right: 10px" title="Wenn deaktiviert, wird der Algorithmus ohne Verzögerung ausgeführt (Nur die Systemgeschwindigkeit)" checked>
-            <input type="range" min="1" max="1000" value="20" step="1" oninput="updateSpeed()" id="speed" style="width: 250px" class="custom-range" title="Delay in ms">
-        </div>
+        <br>
+        <div class="line"> </div>
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
-        <!--    Sortieralgorithmen-->
-        <button onclick="bogoSort()" class="btn btn-secondary">
-            Bogo Sort
-        </button>
-        <button onclick="bubbleSort()" class="btn btn-secondary">
-            Bubble Sort
-        </button>
-        <button onclick="selectionSort()" class="btn btn-secondary">
-            Selection Sort
-        </button>
-        <button onclick="insertionSort()" class="btn btn-secondary">
-            Insertion Sort
-        </button>
-        <button onclick="mergeSort()" class="btn btn-secondary">
-            Merge Sort
-        </button>
-        <button onclick="quickSort()" class="btn btn-secondary">
-            Quick Sort
-        </button>
-        <button onclick="heapSort()" class="btn btn-secondary">
-            Heap Sort
-        </button>
-        <button onclick="radixSort()" class="btn btn-secondary">
-            Radix Sort
-        </button>
-        <button onclick="shellSort()" class="btn btn-secondary">
-            Shell Sort
-        </button>
-        <button onclick="countingSort()" class="btn btn-secondary">
-            Counting Sort
-        </button>
-        <button onclick="cocktailSort()" class="btn btn-secondary">
-            Cocktail Sort
-        </button>
-        <button onclick="combSort()" class="btn btn-secondary">
-            Comb Sort
-        </button>
-        <button onclick="gnomeSort()" class="btn btn-secondary">
-            Gnome Sort
-        </button>
-        <button onclick="oddEvenSort()" class="btn btn-secondary">
-            Odd-Even Sort
-        </button>
-        <button onclick="cycleSort()" class="btn btn-secondary">
-            Cycle Sort
-        </button>
-        <button onclick="stoogeSort()" class="btn btn-secondary">
-            Stooge Sort
-        </button>
-        <button onclick="pancakeSort()" class="btn btn-secondary">
-            Pancake Sort
-        </button>
-    </div>
-
-    <div class="line"> </div>
 
     <div class="container" id="explanation">
         <h2>Erklärungen: <span style="font-size: 10px">Texte von ChatGPT</span></h2>
@@ -1212,12 +1220,16 @@ function flip(array, i){
         let selectedBarIndex = null;
         let shouldStop = false;
 
-        function stopSorting(){
+        function stopSorting(stop){
+            //wenn stop nicht gesetzt ist, dann toggle den wert
+            if(stop === undefined)
             shouldStop = !shouldStop;
+            else shouldStop = stop;
             document.getElementById("stopButton").innerText = shouldStop ? "Release" : "Stop Sorting";
             if (!shouldStop){
                 document.getElementById("stopButton").classList.add("btn-danger");
                 document.getElementById("stopButton").classList.remove("btn-warning");
+                isSorted();
             }else{
                 document.getElementById("stopButton").classList.remove("btn-danger");
                 document.getElementById("stopButton").classList.add("btn-warning");
