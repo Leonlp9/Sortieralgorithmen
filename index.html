@@ -521,10 +521,15 @@ mySort();</textarea>
             Wikipedia: <a href="https://de.wikipedia.org/wiki/Bubblesort" target="_blank">Bubble Sort</a>
 
             <h5>Psuedocode:</h5>
-            <pre class=" p-2"><code class="language-javascript">for i from 0 to n-1:
-    for j from 1 to n:
-        if array[j-1] > array[j]:
-            swap elements at index j-1 and j</code></pre>
+            <pre class=" p-2"><code class="language-javascript">for i ← 0 to A[].Len-1 do
+        for j ← 1 to A[].Len-1 do
+            if A[j-1] > A[j] Then
+                lastJ ← A[j-1]
+                A[j-1] ← A[j]
+                A[j] ← lastJ
+            End if
+        End for
+    End for</code></pre>
 
 <!--            JavaScript-->
             <h5>JavaScript:</h5>
