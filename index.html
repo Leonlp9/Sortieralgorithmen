@@ -273,6 +273,8 @@
                         }
                     }
                    ">
+                <label for="playSound">Play Sound: </label>
+                <input type="checkbox" id="playSound" style="margin-right: 10px" title="Wenn aktiviert, wird ein Sound abgespielt, wenn ein Balken getauscht wird" checked>
             </div>
         </div>
 
@@ -1570,6 +1572,29 @@ function flip(array, i){
             }
         }
 
+
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        Array.prototype.max = function() {
+            return Math.max.apply(null, this);
+        };
+
+        function playSound(pitch) {
+            if (document.getElementById("playSound").checked === false)
+                return;
+
+            fetch('sound/click.mp3')
+                .then(response => response.arrayBuffer())
+                .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                .then(audioBuffer => {
+                    var source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.playbackRate.value = pitch;
+                    source.connect(audioContext.destination);
+                    source.start();
+                });
+        }
+
         async function swap(i, j){
             let temp = valueArray[i];
             valueArray[i] = valueArray[j];
@@ -1582,6 +1607,9 @@ function flip(array, i){
             writes += 2;
             updateStats();
             updateBars();
+
+            playSound(temp / valueArray.max() * 2)
+
             await delay(speed);
             setDefaultColor(i);
             setDefaultColor(j);
@@ -1592,6 +1620,9 @@ function flip(array, i){
             bars[i].style.backgroundColor = "blue";
             reads++;
             updateStats();
+
+            //play sound
+
             await delay(speed);
             setDefaultColor(i)
             return valueArray[i];
@@ -1603,6 +1634,9 @@ function flip(array, i){
             bars[i].style.backgroundColor = "yellow";
             writes++;
             updateStats();
+
+            playSound(value / valueArray.max() * 2)
+
             await delay(speed);
             setDefaultColor(i)
             updateBars();
