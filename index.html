@@ -245,9 +245,6 @@
                 <button onclick="createBars(document.getElementById('input').value)" class="btn btn-primary">
                     Create Bars
                 </button>
-                <button onclick="shuffle()" class="btn btn-primary">
-                    Shuffle
-                </button>
                 <button id="stopButton" class="btn btn-danger" onclick="stopSorting()" style="width: 125px">Stop Sorting</button>
             </div>
         </div>
@@ -276,6 +273,18 @@
                 <label for="playSound">Play Sound: </label>
                 <input type="checkbox" id="playSound" style="margin-right: 10px" title="Wenn aktiviert, wird ein Sound abgespielt, wenn ein Balken getauscht wird" checked>
             </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px">
+            <button onclick="shuffle()" class="btn btn-primary">
+                Shuffle
+            </button>
+            <button onclick="reverse()" class="btn btn-primary">
+                Reverse
+            </button>
+            <button onclick="sawtoothInputs()" class="btn btn-primary">
+                Sawtooth
+            </button>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
@@ -1560,6 +1569,35 @@ function flip(array, i){
             for (let i = 0; i < valueArray.length; i++) {
                 let randomIndex = Math.floor(Math.random() * valueArray.length);
                 await swap(i, randomIndex);
+            }
+        }
+
+        async function reverse(){
+            for (let i = 0; i < valueArray.length / 2; i++) {
+                await swap(i, valueArray.length - i - 1);
+            }
+        }
+
+        async function sawtoothInputs(){
+            //like: 1 2 3 4 5 10 9 8 7 6 11 12 13 14 15..
+            // to 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+            let newArray = [];
+            for (let i = 0; i < valueArray.length; i++) {
+                if(i % 2 === 0){
+                    newArray.push(valueArray[i]);
+                }
+            }
+            for (let i = 0; i < valueArray.length; i++) {
+                if(i % 2 !== 0){
+                    newArray.push(valueArray[i]);
+                }
+            }
+            valueArray = newArray;
+            updateBars();
+
+            //setDefaultColor()
+            for (let i = 0; i < valueArray.length; i++) {
+                setDefaultColor(i)
             }
         }
 
