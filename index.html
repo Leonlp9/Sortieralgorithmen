@@ -1624,6 +1624,13 @@ function flip(array, i){
             for (let i = 0; i < valueArray.length; i++) {
                 await writeAt(i, Math.floor(Math.sin(i / valueArray.length * Math.PI * 2) * 50 + 51));
             }
+
+            //disable highlight correct
+            document.getElementById("highlightCorrect").checked = false;
+
+            for(let i = 0; i < valueArray.length; i++){
+                setDefaultColor(i);
+            }
         }
 
         async function cosineWaveInputs(){
@@ -1631,17 +1638,38 @@ function flip(array, i){
             for (let i = 0; i < valueArray.length; i++) {
                 await writeAt(i, Math.floor(Math.cos(i / valueArray.length * Math.PI * 2) * 50 + 51));
             }
+
+            //disable highlight correct
+            document.getElementById("highlightCorrect").checked = false;
+
+            for(let i = 0; i < valueArray.length; i++){
+                setDefaultColor(i);
+            }
         }
 
         async function setTriangleInputs(){
             for (let i = 0; i < valueArray.length; i++) {
                 await writeAt(i, valueArray.length - Math.floor(Math.abs(i - valueArray.length / 2) * 2 + 1));
             }
+
+            //disable highlight correct
+            document.getElementById("highlightCorrect").checked = false;
+
+            for(let i = 0; i < valueArray.length; i++){
+                setDefaultColor(i);
+            }
         }
 
         async function addLowRandomChangesToInputs(){
             for (let i = 0; i < valueArray.length; i++) {
                 await writeAt(i, valueArray[i] + Math.floor(Math.random() * 5) - 2);
+            }
+
+            //disable highlight correct
+            document.getElementById("highlightCorrect").checked = false;
+
+            for(let i = 0; i < valueArray.length; i++){
+                setDefaultColor(i);
             }
         }
 
