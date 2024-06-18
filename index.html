@@ -275,6 +275,9 @@
             </div>
         </div>
 
+        <span style="width: 100%; text-align: center; display: block;">
+            <b>Inputs</b> (Yellow buttons add equal values):
+        </span>
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px">
             <button onclick="shuffle()" class="btn btn-primary">
                 Shuffle
@@ -285,17 +288,23 @@
             <button onclick="sawtoothInputs()" class="btn btn-primary">
                 Sawtooth
             </button>
-            <button onclick="sineWaveInputs()" class="btn btn-primary">
+            <button onclick="sineWaveInputs()" class="btn btn-warning">
                 Set Sin Wave
             </button>
-            <button onclick="cosineWaveInputs()" class="btn btn-primary">
+            <button onclick="cosineWaveInputs()" class="btn btn-warning">
                 Set Cos Wave
             </button>
-            <button onclick="setTriangleInputs()" class="btn btn-primary">
+            <button onclick="setTriangleInputs()" class="btn btn-warning">
                 Set Triangle
+            </button>
+            <button onclick="addLowRandomChangesToInputs()" class="btn btn-warning">
+                Add Low Random Changes
             </button>
         </div>
 
+        <span style="width: 100%; text-align: center; display: block;">
+            <b>Sortieralgorithmen:</b>
+        </span>
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
             <!--    Sortieralgorithmen-->
             <button onclick="bogoSort()" class="btn btn-secondary">
@@ -1625,14 +1634,14 @@ function flip(array, i){
         }
 
         async function setTriangleInputs(){
-            //die werte von einem dreieck annehmen wie:
-            //   x
-            //  xxx
-            // xxxxx
-            //xxxxxxx
-
             for (let i = 0; i < valueArray.length; i++) {
                 await writeAt(i, valueArray.length - Math.floor(Math.abs(i - valueArray.length / 2) * 2 + 1));
+            }
+        }
+
+        async function addLowRandomChangesToInputs(){
+            for (let i = 0; i < valueArray.length; i++) {
+                await writeAt(i, valueArray[i] + Math.floor(Math.random() * 5) - 2);
             }
         }
 
