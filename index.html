@@ -285,6 +285,15 @@
             <button onclick="sawtoothInputs()" class="btn btn-primary">
                 Sawtooth
             </button>
+            <button onclick="sineWaveInputs()" class="btn btn-primary">
+                Set Sin Wave
+            </button>
+            <button onclick="cosineWaveInputs()" class="btn btn-primary">
+                Set Cos Wave
+            </button>
+            <button onclick="setTriangleInputs()" class="btn btn-primary">
+                Set Triangle
+            </button>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap">
@@ -1598,6 +1607,32 @@ function flip(array, i){
             //setDefaultColor()
             for (let i = 0; i < valueArray.length; i++) {
                 setDefaultColor(i)
+            }
+        }
+
+        async function sineWaveInputs(){
+            //die werte einer sinuswelle annehmen
+            for (let i = 0; i < valueArray.length; i++) {
+                await writeAt(i, Math.floor(Math.sin(i / valueArray.length * Math.PI * 2) * 50 + 51));
+            }
+        }
+
+        async function cosineWaveInputs(){
+            //die werte einer sinuswelle annehmen
+            for (let i = 0; i < valueArray.length; i++) {
+                await writeAt(i, Math.floor(Math.cos(i / valueArray.length * Math.PI * 2) * 50 + 51));
+            }
+        }
+
+        async function setTriangleInputs(){
+            //die werte von einem dreieck annehmen wie:
+            //   x
+            //  xxx
+            // xxxxx
+            //xxxxxxx
+
+            for (let i = 0; i < valueArray.length; i++) {
+                await writeAt(i, valueArray.length - Math.floor(Math.abs(i - valueArray.length / 2) * 2 + 1));
             }
         }
 
