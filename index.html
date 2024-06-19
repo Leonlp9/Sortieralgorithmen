@@ -217,7 +217,8 @@
     <div id="sort">
         <div>
             <span style="color: blue">■</span> Reads: <span id="reads" style="font-variant-numeric: tabular-nums; font-family: 'Courier New', Courier, monospace; font-weight: 600">0</span> |
-            <span style="color: yellow">■</span><span style="color: red">■</span><span style="font-size: 10px"></span> Writes: <span id="writes" style="font-variant-numeric: tabular-nums; font-family: 'Courier New', Courier, monospace;  font-weight: 600">0</span>
+            <span style="color: yellow">■</span><span style="color: red">■</span><span style="font-size: 10px"></span> Writes: <span id="writes" style="font-variant-numeric: tabular-nums; font-family: 'Courier New', Courier, monospace;  font-weight: 600">0</span> |
+            Without Async Delay: <span id="delay" style="font-variant-numeric: tabular-nums; font-family: 'Courier New', Courier, monospace;  font-weight: 600">0</span>
             <button onclick="resetStats()" class="btn btn-danger" style="height: 20px; font-size: 11px; padding: 0 4px; margin: 0 5px">
                 Reset
             </button>
@@ -1370,6 +1371,7 @@ function flip(array, i){
 
         let reads = 0;
         let writes = 0;
+        let timeTookInDelayInMs = 0;
 
         let selectedBarIndex = null;
         let shouldStop = false;
@@ -1401,22 +1403,32 @@ function flip(array, i){
         function resetStats(){
             reads = 0;
             writes = 0;
+            timeTookInDelayInMs = 0;
             updateStats();
         }
 
         function updateStats(){
             document.getElementById("reads").innerText = reads;
             document.getElementById("writes").innerText = writes;
+
+            //formatiere ms die zahl in ein string mit komma
+            let timeTookInDelay = timeTookInDelayInMs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+            document.getElementById("delay").innerText = timeTookInDelay + "ms";
+
         }
 
         function updateSpeed(){
             speed = document.getElementById("speed").value;
         }
 
-        function delay(milliseconds){
-            if(document.getElementById("delayEnabled").checked === false)
-            return 0;
+        function delay(milliseconds, force = false){
+            if(document.getElementById("delayEnabled").checked === false && !force)
+                return 0;
+
             return new Promise((resolve, reject) => {
+                let start = new Date().getTime();
+
                 setTimeout(resolve, milliseconds);
 
                 if(shouldStop){
@@ -1426,6 +1438,9 @@ function flip(array, i){
 
                     reject(new Error("Promise wurde abgebrochen"));
                 }
+
+                timeTookInDelayInMs += new Date().getTime() - start;
+
             });
         }
 
@@ -1610,7 +1625,11 @@ function flip(array, i){
                     newArray.push(valueArray[i]);
                 }
             }
-            valueArray = newArray;
+
+            for (let i = 0; i < valueArray.length; i++) {
+                await writeAt(i, newArray[i]);
+            }
+
             updateBars();
 
             //setDefaultColor()
@@ -1619,10 +1638,10 @@ function flip(array, i){
             }
         }
 
-        async function sineWaveInputs(){
+        async function sineWaveInputs(b = 0){
             //die werte einer sinuswelle annehmen
             for (let i = 0; i < valueArray.length; i++) {
-                await writeAt(i, Math.floor(Math.sin(i / valueArray.length * Math.PI * 2) * 50 + 51));
+                await writeAt(i, Math.floor(Math.sin((i - b) / valueArray.length * Math.PI * 2) * 50 + 51));
             }
 
             //disable highlight correct
@@ -1630,6 +1649,15 @@ function flip(array, i){
 
             for(let i = 0; i < valueArray.length; i++){
                 setDefaultColor(i);
+            }
+        }
+
+        async function sinAnimation(){
+            let b = 0;
+            while(true){
+                await sineWaveInputs(b);
+                b++;
+                await delay(10, true);
             }
         }
 
@@ -1702,7 +1730,8 @@ function flip(array, i){
                     source.playbackRate.value = pitch;
                     source.connect(audioContext.destination);
                     source.start();
-                });
+                })
+                .catch();
         }
 
         async function swap(i, j){
