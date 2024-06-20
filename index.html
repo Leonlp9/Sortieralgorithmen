@@ -1690,7 +1690,7 @@ function flip(array, i){
 
         async function addLowRandomChangesToInputs(){
             for (let i = 0; i < valueArray.length; i++) {
-                await writeAt(i, valueArray[i] + Math.floor(Math.random() * 5) - 2);
+                await writeAt(i, Math.max((valueArray[i] + Math.floor(Math.random() * 5) - 2), 1));
             }
 
             //disable highlight correct
