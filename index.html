@@ -314,6 +314,9 @@
             <button onclick="bubbleSort()" class="btn btn-secondary">
                 Bubble Sort
             </button>
+            <button onclick="minSort()" class="btn btn-secondary">
+                Min Sort
+            </button>
             <button onclick="selectionSort()" class="btn btn-secondary">
                 Selection Sort
             </button>
@@ -1841,6 +1844,20 @@ function flip(array, i){
             }
         }
 
+
+        async function minSort(){
+            if (!isSorted()) {
+                for (let i = 0; i < valueArray.length - 1; i++) {
+                    for (let j = i+1; j < valueArray.length; j++) {
+                        if (await readAt(j) < await readAt(i)){
+                            await swap(i, j)
+                        }
+                    }
+                }
+            }
+        }
+
+
         async function selectionSort(){
             if (!isSorted()) {
                 let n = valueArray.length;
@@ -2327,7 +2344,7 @@ function flip(array, i){
                 isSorted();
             }
         }
-
+        
 
     </script>
 </body>
